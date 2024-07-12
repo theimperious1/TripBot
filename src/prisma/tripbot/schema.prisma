@@ -552,6 +552,24 @@ model quotes {
   @@unique([url], map: "quotes_url_unique")
 }
 
+model watched_users {
+  target_user_id  String   @id
+  watch_requests  watch_request[]
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+  created_by      String
+}
+
+model watch_request {
+  id                  Int      @id @default(autoincrement())
+  notification_method String
+  channel_id          String?
+  caller_id           String
+  watched_users       watched_users @relation(fields: [watched_user_id], references: [target_user_id])
+  watched_user_id     String
+
+  @@index([watched_user_id], name: "watched_user_id_index")
+}
+
 enum bridge_status {
   PENDING
   ACTIVE
