@@ -560,7 +560,7 @@ model watched_users {
 }
 
 model watch_request {
-  id                  Int      @id @default(autoincrement())
+  id                  Int           @id @default(autoincrement())
   notification_method String
   channel_id          String?
   caller_id           String

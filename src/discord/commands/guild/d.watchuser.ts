@@ -3,6 +3,7 @@ import {
   GuildMember,
   SlashCommandBuilder,
   TextChannel,
+  Role,
 } from 'discord.js';
 import { SlashCommand } from '../../@types/commandDef';
 import commandContext from '../../utils/context'; // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -43,6 +44,13 @@ export const dWatchUser: SlashCommand = {
       await interaction.editReply({ content: 'This command can only be used in a server!' });
       return false;
     }
+  
+    if (!(interaction.member as GuildMember).roles.cache.some(
+      (role: Role) => (role.id === env.ROLE_MODERATOR)
+    )) {
+      await interaction.reply('You do not have permission to use this command.');
+      return false;
+    }
 
     const targetUserId = interaction.options.getString('target', true);
 
@@ -63,7 +71,7 @@ export const dWatchUser: SlashCommand = {
 
     // Ensure that the channel used is a text channel
     if (alertChannel.type !== ChannelType.GuildText) {
-      await interaction.editReply({ content: 'This command can only be used in a server!' });
+      await interaction.editReply({ content: 'This command can only be used in a text channel!' });
       return false;
     }
 
